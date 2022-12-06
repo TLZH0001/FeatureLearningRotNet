@@ -1,12 +1,14 @@
 import torch
 import torch.nn as nn
-import imp
+# import imp
+from importlib.machinery import SourceFileLoader
 import os
 
 
 current_path = os.path.abspath(__file__)
 filepath_to_linear_classifier_definition = os.path.join(os.path.dirname(current_path), 'LinearClassifier.py')
-LinearClassifier = imp.load_source('',filepath_to_linear_classifier_definition).create_model
+# LinearClassifier = imp.load_source('',filepath_to_linear_classifier_definition).create_model
+LinearClassifier = (SourceFileLoader("",filepath_to_linear_classifier_definition).load_module()).create_model
 
 
 class MClassifier(nn.Module):

@@ -3,14 +3,16 @@ import torchvision
 import torchvision.transforms as transforms
 
 import os
-import imp
+# import imp
+from importlib.machinery import SourceFileLoader
 import argparse
 import numpy as np
 from PIL import Image
 import caffe
 
 def pytorch_init_network(net_def_file, opt):
-    return imp.load_source("",net_def_file).create_model(opt)
+    # return imp.load_source("",net_def_file).create_model(opt)
+    return (SourceFileLoader("",net_def_file).load_module()).create_model(opt)
 
 def pytorch_load_pretrained(network, pretrained_path):
     print('==> Load pretrained parameters from file %s:' % (pretrained_path))
@@ -263,7 +265,7 @@ if __name__ == '__main__':
     copy_params_pytorch2caffe(net_pytorch, net_caffe, std_pix)
 
     transform = []
-    transform.append(transforms.Scale(256))
+    transform.append(transforms.Resize(256))
     transform.append(transforms.CenterCrop(224))
     transform.append(lambda x: np.asarray(x))
     transform = transforms.Compose(transform)        

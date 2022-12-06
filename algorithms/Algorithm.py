@@ -2,7 +2,8 @@
 from __future__ import print_function
 import os
 import os.path
-import imp
+# import imp
+from importlib.machinery import SourceFileLoader
 from tqdm import tqdm
 
 import torch
@@ -14,6 +15,7 @@ import datetime
 import logging
 
 from pdb import set_trace as breakpoint
+from six.moves import xrange  # pylint: disable=redefined-builtin
 
 class Algorithm():
     def __init__(self, opt):
@@ -82,7 +84,9 @@ class Algorithm():
         if (not os.path.isfile(net_def_file)):
             raise ValueError('Non existing file: {0}'.format(net_def_file))
 
-        network = imp.load_source("",net_def_file).create_model(net_opt)
+        # network = imp.load_source("",net_def_file).create_model(net_opt)
+        network = (SourceFileLoader("",net_def_file).load_module()).create_model(net_opt)
+
         if pretrained_path != None:
             self.load_pretrained(network, pretrained_path)
 
@@ -267,8 +271,8 @@ class Algorithm():
 
     def evaluate(self, dloader):
         self.logger.info('Evaluating: %s' % os.path.basename(self.exp_dir))
-
-	self.dloader = dloader
+        
+        self.dloader = dloader
         self.dataset_eval = dloader.dataset
         self.logger.info('==> Dataset: %s [%d images]' % (dloader.dataset.name, len(dloader)))
         for key, network in self.networks.items():
@@ -304,7 +308,7 @@ class Algorithm():
         self.best_epoch = None
 
     def keep_record_of_best_model(self, eval_stats, current_epoch):
-	if self.keep_best_model_metric_name is not None:
+        if self.keep_best_model_metric_name is not None:
             metric_name = self.keep_best_model_metric_name
             if (metric_name not in eval_stats):
                 raise ValueError('The provided metric {0} for keeping the best model is not computed by the evaluation routine.'.format(metric_name))

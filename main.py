@@ -1,7 +1,8 @@
 from __future__ import print_function
 import argparse
 import os
-import imp
+# import imp
+from importlib.machinery import SourceFileLoader
 import algorithms as alg
 from dataloader import DataLoader, GenericDataset
 
@@ -23,7 +24,8 @@ exp_directory = os.path.join('.','experiments',args_opt.exp)
 
 # Load the configuration params of the experiment
 print('Launching experiment: %s' % exp_config_file)
-config = imp.load_source("",exp_config_file).config
+# config = imp.load_source("",exp_config_file).config
+config = (SourceFileLoader("",exp_config_file).load_module()).config
 config['exp_dir'] = exp_directory # the place where logs, models, and other stuff will be stored
 print("Loading experiment %s from file: %s" % (args_opt.exp, exp_config_file))
 print("Generated logs, snapshots, and model files will be stored on %s" % (config['exp_dir']))

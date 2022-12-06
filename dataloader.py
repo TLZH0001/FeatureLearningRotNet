@@ -95,20 +95,20 @@ class GenericDataset(data.Dataset):
 
             if self.split!='train':
                 transforms_list = [
-                    transforms.Scale(256),
+                    transforms.Resize(256),
                     transforms.CenterCrop(224),
                     lambda x: np.asarray(x),
                 ]
             else:
                 if self.random_sized_crop:
                     transforms_list = [
-                        transforms.RandomSizedCrop(224),
+                        transforms.RandomResizedCrop(224),
                         transforms.RandomHorizontalFlip(),
                         lambda x: np.asarray(x),
                     ]
                 else:
                     transforms_list = [
-                        transforms.Scale(256),
+                        transforms.Resize(256),
                         transforms.RandomCrop(224),
                         transforms.RandomHorizontalFlip(),
                         lambda x: np.asarray(x),
@@ -127,7 +127,7 @@ class GenericDataset(data.Dataset):
             else:
                 if self.random_sized_crop:
                     transforms_list = [
-                        transforms.RandomSizedCrop(224),
+                        transforms.RandomResizedCrop(224),
                         transforms.RandomHorizontalFlip(),
                         lambda x: np.asarray(x),
                     ]
